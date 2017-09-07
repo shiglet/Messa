@@ -1,8 +1,7 @@
 ﻿using System;
-using System.Windows.Forms;
 using Messa.API.Core.Frames;
 using Messa.API.Core.Network;
-using Messa.API.Utils.Log;
+using Logger = Messa.API.Utils.Log.Logger;
 
 namespace Messa.API.Core
 {

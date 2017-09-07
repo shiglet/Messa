@@ -117,5 +117,11 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Messa.API\Messa.API.csproj">
+      <Project>{d7041bca-c67f-4f34-9772-560644846b1f}</Project>
+      <Name>Messa.API</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

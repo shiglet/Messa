@@ -1854,6 +1854,7 @@
     <Compile Include="Utils\IO\Types\CustomInt64.cs" />
     <Compile Include="Utils\IO\Types\CustomUInt64.cs" />
     <Compile Include="Utils\Logger.cs" />
+    <Compile Include="Utils\Log\Logger.cs" />
     <Compile Include="Utils\Randomize.cs" />
     <Compile Include="Utils\TimerCore.cs" />
   </ItemGroup>
