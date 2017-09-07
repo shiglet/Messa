@@ -61,6 +61,22 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="BotView.xaml.cs">
+      <DependentUpon>BotView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Core\Account.cs" />
+    <Compile Include="Core\Network\Network.cs" />
+    <Compile Include="FullSocket\ConnectionFullSocket.cs" />
+    <Compile Include="FullSocket\FullSocket.cs" />
+    <Compile Include="FullSocket\FullSocketConfiguration.cs" />
+    <Compile Include="FullSocket\NetworkMessageDispatcher.cs" />
+    <Compile Include="RelayCommand\RelayCommand.cs" />
+    <Compile Include="ViewModels\BotViewModel.cs" />
+    <Compile Include="ViewModels\MainViewModel.cs" />
+    <Page Include="BotView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

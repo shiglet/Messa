@@ -1,9 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26730.8
+VisualStudioVersion = 15.0.26730.3
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Messa.API", "Messa.API\Messa.API.csproj", "{D7041BCA-C67F-4F34-9772-560644846B1F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Messa", "Messa\Messa.csproj", "{20FF6AD2-E3FE-4070-AD45-3167B402D33E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{D7041BCA-C67F-4F34-9772-560644846B1F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D7041BCA-C67F-4F34-9772-560644846B1F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D7041BCA-C67F-4F34-9772-560644846B1F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{20FF6AD2-E3FE-4070-AD45-3167B402D33E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{20FF6AD2-E3FE-4070-AD45-3167B402D33E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{20FF6AD2-E3FE-4070-AD45-3167B402D33E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{20FF6AD2-E3FE-4070-AD45-3167B402D33E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
