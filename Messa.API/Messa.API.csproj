@@ -43,7 +43,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Class1.cs" />
     <Compile Include="Core\Frames\IBasicFrame.cs" />
     <Compile Include="Core\Frames\ILatencyFrame.cs" />
     <Compile Include="Core\Frame\ILatencyFrame.cs" />
