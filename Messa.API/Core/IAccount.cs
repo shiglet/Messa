@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Windows.Forms;
 using Messa.API.Core.Frames;
 using Messa.API.Core.Network;
+using Messa.API.Utils.Log;
 
 namespace Messa.API.Core
 {
@@ -11,6 +13,7 @@ namespace Messa.API.Core
         /// </summary>
         string Login { get; set; }
 
+        Logger Logger { get; set; }
         /// <summary>
         ///     The password of the account
         /// </summary>
@@ -73,6 +76,8 @@ namespace Messa.API.Core
         void LogPacket(string origin, string name, string id);
 
         void PerformAction(Action action, int delay);
-        
+
+
+        event Action<string, string, string> PacketLogged;
     }
 }
