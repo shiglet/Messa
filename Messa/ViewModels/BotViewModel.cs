@@ -116,7 +116,7 @@ namespace Messa.ViewModels
                         color = (Brush)brushConverter.ConvertFromString("#E8890D");
                         break;
                 }
-                Logs.Add(new LogMessage($"{DateTime.Now.TimeOfDay} - {log}",color));
+                Logs.Add(new LogMessage($"[{DateTime.Now.TimeOfDay}] - {log}",color));
             });
         }
     }
