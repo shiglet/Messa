@@ -21,7 +21,7 @@ namespace Messa.Core
 
             Network = new Network.Network(this, connection, dispatcher);
 
-            //Character = new Character(this);
+            Character = new Character(this);
 
             //LatencyFrame = new LatencyFrame();
             //BasicFrame = new BasicFrame(this);

@@ -4,12 +4,12 @@ namespace Messa.API.Utils.Log
 {
     public class Logger
     {
-        public delegate void OnLogDelegate(string log);
+        public delegate void OnLogDelegate(string log,LogMessageType entry);
         public event OnLogDelegate OnLog;
 
         public void Log(string log, LogMessageType entry = LogMessageType.Info)
         {
-            OnLog?.Invoke(log);
+            OnLog?.Invoke(log,entry);
         }
     }
 }

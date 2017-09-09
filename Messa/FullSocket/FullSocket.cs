@@ -62,7 +62,7 @@ namespace Messa.FullSocket
             server.Account.Network.RegisterPacket<HelloConnectMessage>(HandleHelloConnectMessage,
                 MessagePriority.VeryHigh);
 
-            //server.Account.Network.RegisterPacket<ServerListMessage>(HandleServerListMessage, MessagePriority.VeryHigh);
+            server.Account.Network.RegisterPacket<ServersListMessage>(HandleServersListMessage, MessagePriority.VeryHigh);
             server.Account.Network.RegisterPacket<SelectedServerDataMessage>(HandleSelectedServerDataMessage,
                 MessagePriority.VeryHigh);
             server.Account.Network.RegisterPacket<RawDataMessage>(HandleRawDataMessage, MessagePriority.VeryHigh);
@@ -144,7 +144,7 @@ namespace Messa.FullSocket
         private static void OnWorldClientDisconnected(Client client)
         {
             var fs = client as ConnectionFullSocket;
-
+            fs.Account.Logger.Log("Client deconnecté !");
             fs?.Account.Network?.AddMessage(fs.Account.Network.Dispose);
         }
 
@@ -160,7 +160,7 @@ namespace Messa.FullSocket
             {
                 var msg = ssdm;
 
-                fs.Account.Logger.Log("Sélection du serveur " + D2OParsing.GetServerName(msg.ServerId));
+                //fs.Account.Logger.Log("Sélection du serveur " + D2OParsing.GetServerName(msg.ServerId));
                 var ticket = AES.DecodeWithAES(msg.Ticket);
                 _mTickets.Add(ticket,
                     Tuple.Create(fs.Account,
@@ -216,7 +216,7 @@ namespace Messa.FullSocket
         private void HandleHelloConnectMessage(IAccount account, HelloConnectMessage message)
         {
             account.Network.ConnectionType = ClientConnectionType.Authentification;
-            Logger.Default.Log("Connecté au serveur d'authentification.");
+            account.Logger.Log("Connecté au serveur d'authentification.");
             var credentials = Rsa.Encrypt(message.Key, account.Login, account.Password, message.Salt);
             var version = new VersionExtended
             {
@@ -232,7 +232,7 @@ namespace Messa.FullSocket
 
             var identificationMessage =
                 new IdentificationMessage(true, false, false, version, "fr", credentials, 0, 0, new List<ushort>());
-            Logger.Default.Log("Envois des informations d'identification...");
+            account.Logger.Log("Envois des informations d'identification...");
             account.Network.SendToServer(identificationMessage);
         }
         

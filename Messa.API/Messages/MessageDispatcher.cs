@@ -165,7 +165,7 @@ namespace Messa.API.Messages
                 }
                 catch (Exception ex)
                 {
-                    Logger.Default.Log($"Cannot dispatch {message}", LogMessageType.Public);
+                    (token as IAccount)?.Logger.Log($"Cannot dispatch {message}", LogMessageType.Public);
                     Console.WriteLine(ex);
                 }
                 if (message.Canceled)
