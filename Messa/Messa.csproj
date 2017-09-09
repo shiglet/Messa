@@ -39,6 +39,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Interactivity, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\MahApps.Metro.1.5.0\lib\net45\System.Windows.Interactivity.dll</HintPath>
       <Private>True</Private>
@@ -65,11 +66,14 @@
       <DependentUpon>BotView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Core\Account.cs" />
+    <Compile Include="Core\Character.cs" />
     <Compile Include="Core\Network\Network.cs" />
     <Compile Include="FullSocket\ConnectionFullSocket.cs" />
     <Compile Include="FullSocket\FullSocket.cs" />
     <Compile Include="FullSocket\FullSocketConfiguration.cs" />
     <Compile Include="FullSocket\NetworkMessageDispatcher.cs" />
+    <Compile Include="Game\Chat\Chat.cs" />
+    <Compile Include="Game\Friend\Friend.cs" />
     <Compile Include="RelayCommand\RelayCommand.cs" />
     <Compile Include="ViewModels\BotViewModel.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
@@ -116,6 +120,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Messa.API\Messa.API.csproj">
+      <Project>{d7041bca-c67f-4f34-9772-560644846b1f}</Project>
+      <Name>Messa.API</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

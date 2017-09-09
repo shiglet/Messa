@@ -5,7 +5,7 @@ namespace Messa.API.Utils
     public static class GameConstant
     {
         public const byte Major = 2;
-        public const byte Minor = 42;
+        public const byte Minor = 43;
         public const byte Release = 1;
         public const int Revision = 121870;
         public const byte Patch = 0;
