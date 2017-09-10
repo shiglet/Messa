@@ -37,6 +37,9 @@
     <Reference Include="MahApps.Metro, Version=1.5.0.23, Culture=neutral, PublicKeyToken=f4fb5a3c4d1e5b4f, processorArchitecture=MSIL">
       <HintPath>..\packages\MahApps.Metro.1.5.0\lib\net45\MahApps.Metro.dll</HintPath>
     </Reference>
+    <Reference Include="MoonSharp.Interpreter, Version=2.0.0.0, Culture=neutral, PublicKeyToken=921e73ce94aa17f8, processorArchitecture=MSIL">
+      <HintPath>..\packages\MoonSharp.2.0.0.0\lib\net40-client\MoonSharp.Interpreter.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
@@ -68,12 +71,42 @@
     <Compile Include="Core\Account.cs" />
     <Compile Include="Core\Character.cs" />
     <Compile Include="Core\Network\Network.cs" />
+    <Compile Include="Core\Pathmanager\PathManager.cs" />
+    <Compile Include="Core\Scripts\IASpell.cs" />
+    <Compile Include="Core\Scripts\ScriptsData.cs" />
+    <Compile Include="Core\Scripts\ScriptsManager.cs" />
     <Compile Include="FullSocket\ConnectionFullSocket.cs" />
     <Compile Include="FullSocket\FullSocket.cs" />
     <Compile Include="FullSocket\FullSocketConfiguration.cs" />
     <Compile Include="FullSocket\NetworkMessageDispatcher.cs" />
+    <Compile Include="Game\Achievement\Achievement.cs" />
+    <Compile Include="Game\Alliance\Alliance.cs" />
+    <Compile Include="Game\BidHouse\BidHouse.cs" />
     <Compile Include="Game\Chat\Chat.cs" />
+    <Compile Include="Game\Chat\History.cs" />
+    <Compile Include="Game\Entity\Entity.cs" />
+    <Compile Include="Game\Entity\Merchant.cs" />
+    <Compile Include="Game\Entity\MonsterGroup.cs" />
+    <Compile Include="Game\Entity\Npc.cs" />
+    <Compile Include="Game\Entity\Player.cs" />
+    <Compile Include="Game\Fight\ArtificialIntelligence.cs" />
+    <Compile Include="Game\Fight\Fight.cs" />
+    <Compile Include="Game\Fight\FightData.cs" />
+    <Compile Include="Game\Fight\Fighters\Companion.cs" />
+    <Compile Include="Game\Fight\Fighters\Fighter.cs" />
+    <Compile Include="Game\Fight\Fighters\Monster.cs" />
+    <Compile Include="Game\Fight\Spell\SpellCast.cs" />
     <Compile Include="Game\Friend\Friend.cs" />
+    <Compile Include="Game\Guild\Guild.cs" />
+    <Compile Include="Game\Inventory\Inventory.cs" />
+    <Compile Include="Game\Jobs\GatherManager.cs" />
+    <Compile Include="Game\Map\CellMovement.cs" />
+    <Compile Include="Game\Map\Elements\InteractiveElement.cs" />
+    <Compile Include="Game\Map\Elements\StatedElement.cs" />
+    <Compile Include="Game\Map\Elements\UsableElement.cs" />
+    <Compile Include="Game\Map\Map.cs" />
+    <Compile Include="Game\Map\MapChangement.cs" />
+    <Compile Include="Game\Party\Party.cs" />
     <Compile Include="RelayCommand\RelayCommand.cs" />
     <Compile Include="ViewModels\BotViewModel.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />

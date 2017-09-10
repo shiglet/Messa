@@ -7,6 +7,7 @@ using Messa.API.Core;
 using Messa.API.Core.Pathmanager;
 using Messa.API.Datacenter;
 using Messa.API.Game.Achievement;
+using Achievement = Messa.Game.Achievement.Achievement;
 using Messa.API.Game.Alliance;
 using Messa.API.Game.BidHouse;
 using Messa.API.Game.Chat;
@@ -15,9 +16,9 @@ using Messa.API.Game.Friend;
 using Messa.API.Game.Guild;
 using Messa.API.Game.Inventory;
 using Messa.API.Game.Jobs;
-using Messa.API.Game.Map;
 using Messa.API.Game.Party;
 using Messa.API.Gamedata.D2o;
+using Messa.API.Gamedata.D2p;
 using Messa.API.Messages;
 using Messa.API.Protocol.Enums;
 using Messa.API.Protocol.Network.Messages.Game.Character.Choice;
@@ -38,8 +39,18 @@ using Messa.API.Protocol.Network.Types.Game.Data.Items;
 using Messa.API.Protocol.Network.Types.Game.Look;
 using Messa.API.Utils;
 using Messa.API.Utils.Enums;
+using Messa.Core.Pathmanager;
+using Messa.Game.Alliance;
+using Messa.Game.BidHouse;
 using Messa.Game.Chat;
+using Messa.Game.Fight;
 using Messa.Game.Friend;
+using Messa.Game.Guild;
+using Messa.Game.Inventory;
+using Messa.Game.Jobs;
+using Messa.Game.Map;
+using Messa.Game.Party;
+using IMap = Messa.API.Game.Map.IMap;
 
 namespace Messa.Core
 {
@@ -54,19 +65,19 @@ namespace Messa.Core
             Spells = new List<SpellItem>();
             Status = CharacterStatus.Disconnected;
             Jobs = new List<JobExperience>();
-            //GatherManager = new GatherManager(Account);
-            //PathManager = new PathManager(Account);
+            GatherManager = new GatherManager(Account);
+            PathManager = new PathManager(Account);
 
-            //Achievement = new Achievement(Account);
-            //Alliance = new Alliance(Account);
-            //BidHouse = new BidHouse(Account);
+            Achievement = new Achievement(Account);
+            Alliance = new Alliance(Account);
+            BidHouse = new BidHouse(Account);
             Chat = new Chat(Account);
-            //Map = new Map(Account);
-            //Fight = new Fight(Account);
+            Map = new Game.Map.Map(Account);
+            Fight = new Fight(Account);
             Friend = new Friend(Account);
-            //Guild = new Guild(Account);
-            //Inventory = new Inventory(Account);
-            //Party = new Party(Account);
+            Guild = new Guild(Account);
+            Inventory = new Inventory(Account);
+            Party = new Party(Account);
 
             #region Choice Handler
 
