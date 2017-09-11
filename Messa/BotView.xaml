@@ -4,13 +4,14 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Messa"
+             xmlns:behaviors="clr-namespace:Messa.Behaviors"
              mc:Ignorable="d" 
              d:DesignHeight="553" d:DesignWidth="1080">
     <Grid>
         <TabControl HorizontalAlignment="Left" Height="543" VerticalAlignment="Top" Width="1080" TabStripPlacement="Left">
             <TabItem Header="Accueil">
                 <Grid Background="#FFE5E5E5">
-                    <ListBox Height="501" Width="973" ItemsSource="{Binding Logs}">
+                    <ListBox behaviors:ListBoxBehavior.ScrollOnNewItem="True" Width="973" ItemsSource="{Binding Logs}" Margin="0,18,0,31">
                         <ListBox.ItemTemplate>
                             <DataTemplate>
                                 <TextBlock Text="{Binding Message}" Foreground="{Binding Color}"/>
@@ -20,9 +21,15 @@
                     <TextBox HorizontalAlignment="Left" Height="21" Margin="0,506,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="973"/>
                 </Grid>
             </TabItem>
+
+            <TabItem Header="Action">
+                <Grid>
+                    <Button Content="Gather" HorizontalAlignment="Left" Margin="139,180,0,0" VerticalAlignment="Top" Width="75" Command="{Binding Gather}"/>
+                </Grid>
+            </TabItem>
             <TabItem Header="Packets">
                 <Grid Background="#FFE5E5E5">
-                    <ListView ItemsSource="{Binding PacketList}"  Name="PacketLV" HorizontalAlignment="Left" Height="537" VerticalAlignment="Top" Width="973">
+                    <ListView  ItemsSource="{Binding PacketList}"  Name="PacketLV" HorizontalAlignment="Left" Height="537" VerticalAlignment="Top" Width="973">
                         <ListView.View>
                             <GridView >
                                 <GridViewColumn Width="400" Header="Origin" DisplayMemberBinding="{Binding Origin}"/>
@@ -45,6 +52,7 @@
                     </ListView>
                 </Grid>
             </TabItem>
+
         </TabControl>
 
     </Grid>

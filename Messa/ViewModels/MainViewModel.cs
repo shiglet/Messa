@@ -72,13 +72,13 @@ namespace Messa.ViewModels
                                 Settings.Default.DofusPath = @"C:\Users\Sadik\AppData\Local\Ankama\Dofus";
                                 Settings.Default.Save();
     
-                                //MapsManager.Init(Settings.Default.DofusPath + @"\app\content\maps");
-                                //IconsManager.Instance.Initialize(Settings.Default.DofusPath + @"\app\content\gfx\items");
-                                //ObjectDataManager.Instance.AddReaders(Settings.Default.DofusPath + @"\app\data\common");
+                                MapsManager.Init(Settings.Default.DofusPath + @"\app\content\maps");
+                                IconsManager.Instance.Initialize(Settings.Default.DofusPath + @"\app\content\gfx\items");
+                                ObjectDataManager.Instance.AddReaders(Settings.Default.DofusPath + @"\app\data\common");
     
                                 FastD2IReader.Instance.Init(Settings.Default.DofusPath + @"\app\data\i18n" +"\\i18n_fr.d2i");
     
-                                //ImageManager.Init(Settings.Default.DofusPath);
+                                ImageManager.Init(Settings.Default.DofusPath);
                                 loaded = true;
                             }
                             var fullSocketConfiguration = new FullSocketConfiguration

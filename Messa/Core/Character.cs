@@ -188,8 +188,6 @@ namespace Messa.Core
         public List<JobExperience> Jobs { get; set; }
         public IGatherManager GatherManager { get; set; }
         public IPathManager PathManager { get; set; }
-        IGatherManager ICharacter.GatherManager { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        IMap ICharacter.Map { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
         public string GetSkinUrl(string mode, int orientation, int width, int height, int zoom)
         {

@@ -8,11 +8,13 @@ using System.Windows;
 using Messa.API.Core;
 using Messa.API.Core.Pathmanager;
 using Messa.API.Game.Map;
+using Messa.API.Gamedata;
 using Messa.API.Messages;
 using Messa.API.Protocol.Network.Messages.Game.Context;
 using Messa.API.Protocol.Network.Messages.Game.Context.Roleplay;
 using Messa.API.Protocol.Network.Messages.Game.Interactive;
 using Messa.API.Utils.Enums;
+using MoonSharp.Interpreter;
 
 namespace Messa.Core.Pathmanager
 {
@@ -27,7 +29,7 @@ namespace Messa.Core.Pathmanager
 
             Launched = false;
             Account = account;
-            PathData = new Dictionary<int, Tuple<MapDirectionEnum, string>>();
+            PathData = new Dictionary<string, Tuple<MapDirectionEnum, string>>();
 
             Account.Network.RegisterPacket<MapComplementaryInformationsDataMessage>(
                 HandleMapComplementaryInformationsDataMessage, MessagePriority.Normal);
@@ -37,7 +39,7 @@ namespace Messa.Core.Pathmanager
                 HandleGameMapNoMovementMessage, MessagePriority.Normal);
         }
 
-        private Dictionary<int, Tuple<MapDirectionEnum, string>> PathData { get; set; }
+        private Dictionary<string, Tuple<MapDirectionEnum, string>> PathData { get; set; }
         private List<int> RessourcesToGather { get; set; }
 
         public bool Launched { get; set; }
@@ -47,7 +49,7 @@ namespace Messa.Core.Pathmanager
         public async void Start(string trajet)
         {
             RessourcesToGather = new List<int>();
-            await Task.Run(() => ParseTrajet(TrajetsDirectory + trajet + ".txt"));
+            await Task.Run(() => ParseTrajet(TrajetsDirectory + trajet + ".lua"));
             Launched = true;
             DoAction();
         }
@@ -61,13 +63,16 @@ namespace Messa.Core.Pathmanager
         {
             if (!Launched) return;
             IMapChangement mapChangement = null;
-            if (PathData.ContainsKey(Account.Character.MapId))
-                switch (PathData[Account.Character.MapId].Item2)
+            Tuple<MapDirectionEnum, string> tuple;
+            tuple = PathData.ContainsKey(Account.Character.Map.Position) ? PathData[Account.Character.Map.Position] : PathData["" + Account.Character.MapId];
+            if (tuple != null)
+            {
+                switch (tuple.Item2)
                 {
                     case "move":
-                        Account.Logger.Log($"[PathManager] Déplacement vers {PathData[Account.Character.MapId].Item1}",
+                        Account.Logger.Log($"[PathManager] Déplacement vers {tuple.Item1}",
                             LogMessageType.Info);
-                        mapChangement = Account.Character.Map.ChangeMap(PathData[Account.Character.MapId].Item1);
+                        mapChangement = Account.Character.Map.ChangeMap(tuple.Item1);
                         break;
                     case "gather":
                         if (Account.Character.GatherManager.CanGatherOnMap(RessourcesToGather))
@@ -76,14 +81,16 @@ namespace Messa.Core.Pathmanager
                             Account.Character.GatherManager.Gather(RessourcesToGather, false);
                             break;
                         }
-                        Account.Logger.Log("Rien a récolter");
-                        mapChangement = Account.Character.Map.ChangeMap(PathData[Account.Character.MapId].Item1);
+                        Account.Logger.Log("Rien a récolter - Changement de map ");
+                        mapChangement = Account.Character.Map.ChangeMap(tuple.Item1);
                         break;
                     case "fight":
                         Account.Logger.Log("[PathManager] Combat non géré", LogMessageType.Public);
-                        mapChangement = Account.Character.Map.ChangeMap(PathData[Account.Character.MapId].Item1);
+                        mapChangement = Account.Character.Map.ChangeMap(tuple.Item1);
                         break;
                 }
+            }
+
             else
                 Account.Logger.Log($"Map {Account.Character.MapId} non gérée dans le trajet");
 
@@ -96,6 +103,70 @@ namespace Messa.Core.Pathmanager
         }
 
         private void ParseTrajet(string path)
+        {
+            PathData = new Dictionary<string, Tuple<MapDirectionEnum, string>>();
+            try
+            {
+                Script script = new Script();
+                script.DoFile(path);
+                var e = script.Globals.Get("ELEMENTS_TO_GATHER");
+                foreach (var s in e.Table.Values)
+                {
+                    RessourcesToGather.Add((int)s.Number);
+                }
+                var x = script.Call(script.Globals["move"]);
+                foreach (var item in x.Table.Values)
+                {
+                    var map = item.Table.Get("map");
+                    var changeMap = item.Table.Get("changeMap");
+                    var door = item.Table.Get("door");
+                    var npcBank = item.Table.Get("npcBank");
+                    var gather = item.Table.Get("gather");
+                    var fight = item.Table.Get("fight");
+                    var direction = MapDirectionEnum.South;
+                    var action = "none";
+                    switch (changeMap.String)
+                    {
+                        case "top":
+                        case "up":
+                        case "haut":
+                        case "north":
+                            direction = MapDirectionEnum.North;
+                            break;
+                        case "bot":
+                        case "bottom":
+                        case "bas":
+                        case "south":
+                            direction = MapDirectionEnum.South;
+                            break;
+                        case "left":
+                        case "gauche":
+                        case "west":
+                            direction = MapDirectionEnum.West;
+                            break;
+                        case "right":
+                        case "droite":
+                        case "east":
+                            direction = MapDirectionEnum.East;
+                            break;
+                        default:
+                            Account.Logger.Log($"Erreur syntaxe  - direction défini sur bas");
+                            break;
+                    }
+                    if (gather.IsNotNil())
+                        action = "gather";
+                    else if (fight.IsNotNil())
+                        action = "fight";
+                    PathData.Add(map.String, Tuple.Create(direction, action));
+                }
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.Message);
+            }
+        }
+
+        /*private void ParseTrajet(string path)
         {
             PathData = new Dictionary<int, Tuple<MapDirectionEnum, string>>();
             try
@@ -156,7 +227,7 @@ namespace Messa.Core.Pathmanager
             {
                 MessageBox.Show(e.Message);
             }
-        }
+        }*/
 
         private void HandleMapComplementaryInformationsDataMessage(IAccount account,
             MapComplementaryInformationsDataMessage message)

@@ -26,6 +26,8 @@ namespace Messa.API.Game.Map
         /// <returns>Dictionnaire (id, element) de IStatedElement</returns>
         Dictionary<int, IStatedElement> StatedElements { get; }
 
+        string Position { get; set; }
+
         /// <summary>Récupère l'identifiant du monde actuel</summary>
         /// <returns>L'id du monde</returns>
         int WorldId { get; }

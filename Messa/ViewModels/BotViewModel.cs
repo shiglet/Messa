@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Input;
 using System.Windows.Media;
 using Messa.API.Utils.Enums;
 using Messa.Core;
@@ -17,6 +18,7 @@ namespace Messa.ViewModels
         public ObservableCollection<Packet> PacketList { get; }
         public ObservableCollection<LogMessage> Logs { get; }
         private Account Account { get; }
+        public ICommand Gather { get; set; }
 
         public BotViewModel(Account account)
         {
@@ -25,6 +27,10 @@ namespace Messa.ViewModels
             Account = account;
             Account.Logger.OnLog += Logger_OnLog;
             Account.PacketLogged += OnPacketLogged;
+            Gather = new RelayCommand.RelayCommand(o =>
+            {
+                Account.Character.PathManager.Start("test");
+            });
         }
 
         private void OnPacketLogged(string origin, string name, string id)
