@@ -65,7 +65,8 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Behaviors\ListBoxBehavior.cs" />
+    <Compile Include="Behaviors\ScrollListBoxBehavior.cs" />
+    <Compile Include="Behaviors\ScrollListViewBehavior.cs" />
     <Compile Include="BotView.xaml.cs">
       <DependentUpon>BotView.xaml</DependentUpon>
     </Compile>

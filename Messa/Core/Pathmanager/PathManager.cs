@@ -61,7 +61,7 @@ namespace Messa.Core.Pathmanager
 
         public void DoAction()
         {
-            if (!Launched) return;
+            if (!Launched || Account.Character.Map.Position == null) return;
             IMapChangement mapChangement = null;
             Tuple<MapDirectionEnum, string> tuple;
             tuple = PathData.ContainsKey(Account.Character.Map.Position) ? PathData[Account.Character.Map.Position] : PathData["" + Account.Character.MapId];

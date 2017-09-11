@@ -5,16 +5,26 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Messa"
              xmlns:behaviors="clr-namespace:Messa.Behaviors"
+             xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
              mc:Ignorable="d" 
              d:DesignHeight="553" d:DesignWidth="1080">
     <Grid>
         <TabControl HorizontalAlignment="Left" Height="543" VerticalAlignment="Top" Width="1080" TabStripPlacement="Left">
             <TabItem Header="Accueil">
                 <Grid Background="#FFE5E5E5">
-                    <ListBox behaviors:ListBoxBehavior.ScrollOnNewItem="True" Width="973" ItemsSource="{Binding Logs}" Margin="0,18,0,31">
+                    <ListBox  Width="973" ItemsSource="{Binding Logs}" Margin="0,18,0,31">
+                        <i:Interaction.Behaviors>
+                            <behaviors:ScrollListBoxBehavior/>
+                        </i:Interaction.Behaviors>
+                        <ListBox.ItemContainerStyle>
+                            <Style TargetType="ListBoxItem">
+                                <Setter Property="IsHitTestVisible" Value="False" />
+                            </Style>
+                        </ListBox.ItemContainerStyle>
                         <ListBox.ItemTemplate>
                             <DataTemplate>
                                 <TextBlock Text="{Binding Message}" Foreground="{Binding Color}"/>
+
                             </DataTemplate>
                         </ListBox.ItemTemplate>
                     </ListBox>
@@ -30,6 +40,9 @@
             <TabItem Header="Packets">
                 <Grid Background="#FFE5E5E5">
                     <ListView  ItemsSource="{Binding PacketList}"  Name="PacketLV" HorizontalAlignment="Left" Height="537" VerticalAlignment="Top" Width="973">
+                        <i:Interaction.Behaviors>
+                            <behaviors:ScrollListViewBehavior/>
+                        </i:Interaction.Behaviors>
                         <ListView.View>
                             <GridView >
                                 <GridViewColumn Width="400" Header="Origin" DisplayMemberBinding="{Binding Origin}"/>
