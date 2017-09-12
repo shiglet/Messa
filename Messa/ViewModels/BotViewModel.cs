@@ -29,7 +29,7 @@ namespace Messa.ViewModels
             Account.PacketLogged += OnPacketLogged;
             Gather = new RelayCommand.RelayCommand(o =>
             {
-                Account.Character.PathManager.Start("test");
+                Account.Character.PathManager.Start("incarnam");
             });
         }
 

@@ -31,8 +31,7 @@ namespace Messa.Core.Pathmanager
             Account = account;
             PathData = new Dictionary<string, Tuple<MapDirectionEnum, string>>();
 
-            Account.Network.RegisterPacket<MapComplementaryInformationsDataMessage>(
-                HandleMapComplementaryInformationsDataMessage, MessagePriority.Normal);
+            //Account.Network.RegisterPacket<MapComplementaryInformationsDataMessage>(HandleMapComplementaryInformationsDataMessage, MessagePriority.Normal);
             Account.Network.RegisterPacket<InteractiveUseErrorMessage>(
                 HandleInteractiveUseErrorMessage, MessagePriority.Normal);
             Account.Network.RegisterPacket<GameMapNoMovementMessage>(
@@ -64,40 +63,53 @@ namespace Messa.Core.Pathmanager
             if (!Launched || Account.Character.Map.Position == null) return;
             IMapChangement mapChangement = null;
             Tuple<MapDirectionEnum, string> tuple;
-            tuple = PathData.ContainsKey(Account.Character.Map.Position) ? PathData[Account.Character.Map.Position] : PathData["" + Account.Character.MapId];
-            if (tuple != null)
+            try
             {
-                switch (tuple.Item2)
+
+                tuple = PathData.ContainsKey(Account.Character.Map.Position)
+                    ? PathData[Account.Character.Map.Position]
+                    : PathData["" + Account.Character.MapId];
+                if (tuple != null)
                 {
-                    case "move":
-                        Account.Logger.Log($"[PathManager] Déplacement vers {tuple.Item1}",
-                            LogMessageType.Info);
-                        mapChangement = Account.Character.Map.ChangeMap(tuple.Item1);
-                        break;
-                    case "gather":
-                        if (Account.Character.GatherManager.CanGatherOnMap(RessourcesToGather))
-                        {
-                            Account.Logger.Log("Lancement de la récolte");
-                            Account.Character.GatherManager.Gather(RessourcesToGather, false);
+                    switch (tuple.Item2)
+                    {
+                        case "move":
+                            Account.Logger.Log($"[PathManager] Déplacement vers {tuple.Item1}",
+                                LogMessageType.Info);
+                            mapChangement = Account.Character.Map.ChangeMap(tuple.Item1);
                             break;
-                        }
-                        Account.Logger.Log("Rien a récolter - Changement de map ");
-                        mapChangement = Account.Character.Map.ChangeMap(tuple.Item1);
-                        break;
-                    case "fight":
-                        Account.Logger.Log("[PathManager] Combat non géré", LogMessageType.Public);
-                        mapChangement = Account.Character.Map.ChangeMap(tuple.Item1);
-                        break;
+                        case "gather":
+                            if (Account.Character.GatherManager.CanGatherOnMap(RessourcesToGather))
+                            {
+                                Account.Logger.Log("Lancement de la récolte");
+                                Account.Character.GatherManager.Gather(RessourcesToGather, false);
+                                break;
+                            }
+                            Account.Logger.Log("Rien a récolter - Changement de map ");
+                            mapChangement = Account.Character.Map.ChangeMap(tuple.Item1);
+                            break;
+                        case "fight":
+                            Account.Logger.Log("[PathManager] Combat non géré", LogMessageType.Public);
+                            mapChangement = Account.Character.Map.ChangeMap(tuple.Item1);
+                            break;
+                    }
                 }
+                else
+                    Account.Logger.Log($"Map {Account.Character.MapId} non gérée dans le trajet");
             }
-
-            else
-                Account.Logger.Log($"Map {Account.Character.MapId} non gérée dans le trajet");
-
+            catch (Exception e)
+            {
+                Account.Logger.Log("Problème dans le trajet",LogMessageType.Error);
+            }
             if (mapChangement == null) return;
             mapChangement.ChangementFinished += delegate (object sender, MapChangementFinishedEventArgs args)
             {
                 Account.Logger.Log($"Changement de map {args.Success}");
+                if(Launched)
+                {
+                    Account.Logger.Log("Lancement de DoAction après changement de map");
+                    Account.PerformAction(DoAction, 500);
+                }
             };
             mapChangement.PerformChangement();
         }
@@ -165,87 +177,26 @@ namespace Messa.Core.Pathmanager
                 MessageBox.Show(e.Message);
             }
         }
-
-        /*private void ParseTrajet(string path)
-        {
-            PathData = new Dictionary<int, Tuple<MapDirectionEnum, string>>();
-            try
-            {
-                var trajet = File.ReadAllLines(path);
-
-                foreach (var line in trajet)
-                {
-                    if (string.IsNullOrEmpty(line)) continue;
-
-                    if (line.Contains("IdGather"))
-                    {
-                        var tempLine = line.Split(':');
-                        var ids = tempLine[1].Split(',').Select(id => Convert.ToInt32(id)).ToList();
-                        RessourcesToGather = ids;
-                        continue;
-                    }
-
-                    var data = line.Split(':');
-                    var mapId = Convert.ToInt32(data[0]);
-                    var tempDirection = data[1];
-                    var action = data[2];
-
-                    var direction = MapDirectionEnum.South;
-
-                    switch (tempDirection)
-                    {
-                        case "top":
-                        case "up":
-                        case "haut":
-                        case "north":
-                            direction = MapDirectionEnum.North;
-                            break;
-                        case "bot":
-                        case "bottom":
-                        case "bas":
-                        case "south":
-                            direction = MapDirectionEnum.South;
-                            break;
-                        case "left":
-                        case "gauche":
-                        case "west":
-                            direction = MapDirectionEnum.West;
-                            break;
-                        case "right":
-                        case "droite":
-                        case "east":
-                            direction = MapDirectionEnum.East;
-                            break;
-                        default:
-                            Account.Logger.Log($"Erreur syntaxe {tempDirection} - direction défini sur bas");
-                            break;
-                    }
-                    PathData.Add(mapId, Tuple.Create(direction, action));
-                }
-            }
-            catch (Exception e)
-            {
-                MessageBox.Show(e.Message);
-            }
-        }*/
-
-        private void HandleMapComplementaryInformationsDataMessage(IAccount account,
+        /*private void HandleMapComplementaryInformationsDataMessage(IAccount account,
             MapComplementaryInformationsDataMessage message)
         {
+            account.Logger.Log("Message !!!! MapComplementaryInformationsDataMessage !!!!");
             if (Launched)
-                account.PerformAction(DoAction, 1000);
-        }
+                account.PerformAction(DoAction, 500);
+        }*/
 
         private void HandleInteractiveUseErrorMessage(IAccount account, InteractiveUseErrorMessage message)
         {
+            account.Logger.Log("InteractiveUserErrorMessage - Erreur lors de la récolte",LogMessageType.Error);
             if (Launched)
-                account.PerformAction(DoAction, 1000);
+                account.PerformAction(DoAction, 50);
         }
 
         private void HandleGameMapNoMovementMessage(IAccount account, GameMapNoMovementMessage message)
         {
+            account.Logger.Log("Message !!!! GameMapNoMovementMessage !!!!");
             if (Launched)
-                account.PerformAction(DoAction, 1000);
+                account.PerformAction(DoAction, 500);
         }
     }
 }

@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
+using System.Threading.Tasks;
+using System.Windows;
 using Messa.API.Core;
 using Messa.API.Datacenter;
 using Messa.API.Game.Jobs;
@@ -41,7 +44,12 @@ namespace Messa.Game.Jobs
                 MessagePriority.Normal);
             _account.Network.RegisterPacket<InteractiveMapUpdateMessage>(HandleInteractiveMapUpdateMessage,
                 MessagePriority.Normal);
+            _account.Network.RegisterPacket<InteractiveUseEndedMessage>(HandleInteractiveUseEndedMessage,
+                MessagePriority.Normal);
+            
         }
+
+        
 
         private ICellMovement Move { get; set; }
 
@@ -82,23 +90,33 @@ namespace Messa.Game.Jobs
             var listUsableElement = new List<IUsableElement>();
             try
             {
-                foreach (var ressourceId in ToGather)
-                foreach (var usableElement in _account.Character.Map.UsableElements)
-                foreach (var interactiveElement in _account.Character.Map.InteractiveElements.Values)
-                {
-                    if (usableElement.Value.Element.Id != interactiveElement.Id ||
-                        !interactiveElement.IsUsable) continue;
-                    if (interactiveElement.TypeId != ressourceId ||
-                        !_account.Character.Map.NoEntitiesOnCell(usableElement.Value.CellId))
-                        continue;
-                    listUsableElement.Add(usableElement.Value);
-                    listDistance.Add(GetRessourceDistance((int) usableElement.Value.Element.Id));
-                }
-                if (listDistance.Count <= 0) return;
+                //var usableElements = new Dictionary<int, IUsableElement>(_account.Character.Map.UsableElements);
+               /* //var InteractiveElements = new Dictionary<int, IInteractiveElement>(_account.Character.Map.InteractiveElements);
+                var checkLock = (_account.Character.Map as Map.Map)?.CheckLock;
+                if (checkLock != null)
+                    lock (checkLock)
+                    {*/
+                        foreach (var ressourceId in ToGather)
+                        foreach (var usableElement in _account.Character.Map.UsableElements)
+                        foreach (var interactiveElement in _account.Character.Map.InteractiveElements.Values)
+                        {
+                            if (usableElement.Value.Element.Id != interactiveElement.Id ||
+                                !interactiveElement.IsUsable) continue;
+                            if (interactiveElement.TypeId != ressourceId ||
+                                !_account.Character.Map.NoEntitiesOnCell(usableElement.Value.CellId) ||
+                                _account.Character.Map.MoveToElement((int) usableElement.Value.Element.Id, 1) == null)
+                                continue;
+                            listUsableElement.Add(usableElement.Value);
+                            listDistance.Add(GetRessourceDistance((int) usableElement.Value.Element.Id));
+                        }
+                    //}
+                if (listDistance.Count <= 0)
+                    return;
                 foreach (var usableElement in TrierDistanceElement(listDistance, listUsableElement))
                 {
                     if (GetRessourceDistance((int) usableElement.Element.Id) == 1 || IsFishing)
                     {
+                        _account.Logger.Log($"La ressource à recolter se trouve tout près ! Recolte ...");
                         if (Moved)
                             _account.Character.Map.UseElement(Id, SkillInstanceUid);
                         else
@@ -113,6 +131,7 @@ namespace Messa.Game.Jobs
                     SkillInstanceUid = usableElement.Skills[0].SkillInstanceUid;
                     Move = _account.Character.Map.MoveToElement(Id, 1);
                     Move.MovementFinished += OnMovementFinished;
+                    _account.Logger.Log($"Déplacement vers la ressource à récolter ...");
                     Move.PerformMovement();
                     break;
                 }
@@ -120,7 +139,12 @@ namespace Messa.Game.Jobs
             }
             catch (Exception e)
             {
-                Console.WriteLine(e.Message);
+                var st = new StackTrace(e, true);
+                // Get the top stack frame
+                var frame = st.GetFrame(0);
+                // Get the line number from the stack frame
+                var line = frame.GetFileLineNumber();
+                MessageBox.Show(e.Message);
             }
         }
 
@@ -138,7 +162,7 @@ namespace Messa.Game.Jobs
             }
             catch (Exception e)
             {
-                Console.WriteLine(e.Message);
+                MessageBox.Show(e.Message);
                 return false;
             }
         }
@@ -178,34 +202,24 @@ namespace Messa.Game.Jobs
             Move.MovementFinished -= OnMovementFinished;
             if (args.Sucess)
             {
+                _account.Logger.Log($"Déplacement vers la ressources réussi avec succès.. Lancement de la récolte..");
                 _account.Character.Map.UseElement(Id, SkillInstanceUid);
-                _account.PerformAction(() =>
-                {
-                    if (CanGatherOnMap(ToGather))
-                    {
-                        Gather();
-                    }
-                    else
-                    {
-                        if (_account.Character.PathManager.Launched)
-                            _account.Character.PathManager.DoAction();
-                    }
-                }, 5000);
             }
             else
             {
-                _account.PerformAction(() =>
-                {
-                    if (_account.Character.PathManager.Launched)
-                        _account.Character.PathManager.DoAction();
-                }, 5000);
+                _account.Logger.Log($"Echec du déplacement vers la ressource ...");
+                if (_account.Character.PathManager.Launched)
+                { 
+                    _account.Logger.Log($"Lancement de DoAction() suite à un echec de déplacement");
+                    _account.Character.PathManager.DoAction();
+                }
             }
         }
 
         private int GetRessourceDistance(int id)
         {
             var characterMapPoint = new MapPoint(_account.Character.CellId);
-            var statedRessource = _account.Character.Map.StatedElements.FirstOrDefault(se => se.Value.Id == id).Value;
+            var statedRessource = _account.Character.Map.StatedElements.FirstOrDefault(se => se.Value.Id  == id).Value;
             if (statedRessource == null) return -1;
             var ressourceMapPoint = new MapPoint((int) statedRessource.CellId);
             return characterMapPoint.DistanceTo(ressourceMapPoint);
@@ -268,6 +282,22 @@ namespace Messa.Game.Jobs
             if (!message.InteractiveElements.Any(element => Launched && element.OnCurrentMap) || !AutoGather) return;
             Launched = true;
             account.PerformAction(Gather, 1000);
+        }
+        private void HandleInteractiveUseEndedMessage(IAccount account, InteractiveUseEndedMessage message)
+        {
+            _account.Logger.Log($"Fin de la récolte de la ressource ...");
+            _account.PerformAction(() =>
+            {
+                if (CanGatherOnMap(ToGather))
+                {
+                    _account.Logger.Log($"Lancement de la méthode Gather...");
+                    Gather();
+                }
+                else
+                {
+                    _account.Character.PathManager.DoAction();
+                }
+            }, 350);
         }
     }
 }

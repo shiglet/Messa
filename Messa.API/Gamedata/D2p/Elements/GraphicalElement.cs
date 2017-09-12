@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Drawing;
 using Messa.API.Utils.IO;
 
 namespace Messa.API.Gamedata.D2p.Elements
@@ -16,7 +17,8 @@ namespace Messa.API.Gamedata.D2p.Elements
         public double OffsetY;
         public double PixelOffsetX;
         public double PixelOffsetY;
-
+        public Point PixelOffset { get; set; }
+        public Point Offset { get; set; }
         public ColorMultiplicator Shadow;
 
         // Methods
@@ -39,6 +41,8 @@ namespace Messa.API.Gamedata.D2p.Elements
                 OffsetX = PixelOffsetX / 43;
                 OffsetY = PixelOffsetY / 21.5;
             }
+            Offset = new Point((int)OffsetX, (int)OffsetY);
+            PixelOffset = new Point((int)PixelOffsetX, (int)PixelOffsetY);
             Altitude = Reader.ReadSByte();
             Identifier = Convert.ToInt32(Reader.ReadUInt());
         }

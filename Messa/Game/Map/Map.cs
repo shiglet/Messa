@@ -94,7 +94,7 @@ namespace Messa.Game.Map
                     foreach (var layerElement in cell.Elements)
                     {
                         if (!(layerElement is GraphicalElement l)) continue;
-                        if (l.Identifier == interactiveElements.Id)
+                        if (l.Identifier == interactiveElements.Id && l.PixelOffset == Point.Empty && l.Offset == Point.Empty)
                             usableElements.Add((int) interactiveElements.Id,
                                 new UsableElement(cell.CellId, interactiveElements,
                                     interactiveElements.EnabledSkills));
@@ -235,7 +235,7 @@ namespace Messa.Game.Map
         public void UseElement(int id, int skillId)
         {
             _account.PerformAction(
-                () => _account.Network.SendToServer(new InteractiveUseRequestMessage((uint) id, (uint) skillId)), 5000);
+                () => _account.Network.SendToServer(new InteractiveUseRequestMessage((uint) id, (uint) skillId)), 500);
         }
 
         public ICellMovement MoveToCellWithDistance(int cellId, int maxDistance, bool bool1)
@@ -492,7 +492,7 @@ namespace Messa.Game.Map
                 var mapName =
                     FastD2IReader.Instance.GetText(ObjectDataManager.Instance.Get<Area>(subArea.AreaId).NameId);
                 var subAreaName = FastD2IReader.Instance.GetText(subArea.NameId);
-                Position = $"[{X}, {Y}]";
+                Position = $"{X},{Y}";
                 Zone = $"{mapName} ({subAreaName})";
                 Entities.Clear();
                 Monsters.Clear();
