@@ -96,6 +96,7 @@
     <Compile Include="Game\Entity\IMonsterGroup.cs" />
     <Compile Include="Game\Entity\INpc.cs" />
     <Compile Include="Game\Entity\IPlayer.cs" />
+    <Compile Include="Game\Exchange\IExchange.cs" />
     <Compile Include="Game\Fight\Fighters\ICompanion.cs" />
     <Compile Include="Game\Fight\Fighters\IFighter.cs" />
     <Compile Include="Game\Fight\Fighters\IMonster.cs" />

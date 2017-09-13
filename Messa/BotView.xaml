@@ -35,6 +35,10 @@
             <TabItem Header="Action">
                 <Grid>
                     <Button Content="Gather" HorizontalAlignment="Left" Margin="139,180,0,0" VerticalAlignment="Top" Width="75" Command="{Binding Gather}"/>
+                    <Label Content="{Binding Account.Character.Name}" Width="100" Margin="139,220,734,290"/>
+                    <Label Content="{Binding Account.Character.Level}" Width="100" Margin="331,220,542,290"/>
+                    <Label Content="{Binding Account.Character.Weight}" Width="100" Margin="139,126,734,384"/>
+                    <Label Content="{Binding Account.Character.MaxWeight}" Width="100" Margin="139,276,734,234"/>
                 </Grid>
             </TabItem>
             <TabItem Header="Packets">
@@ -65,6 +69,7 @@
                     </ListView>
                 </Grid>
             </TabItem>
+
 
         </TabControl>
 

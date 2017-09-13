@@ -91,6 +91,7 @@
     <Compile Include="Game\Entity\MonsterGroup.cs" />
     <Compile Include="Game\Entity\Npc.cs" />
     <Compile Include="Game\Entity\Player.cs" />
+    <Compile Include="Game\Exchange\Exchange.cs" />
     <Compile Include="Game\Fight\ArtificialIntelligence.cs" />
     <Compile Include="Game\Fight\Fight.cs" />
     <Compile Include="Game\Fight\FightData.cs" />

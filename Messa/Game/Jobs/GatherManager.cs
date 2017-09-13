@@ -90,12 +90,10 @@ namespace Messa.Game.Jobs
             var listUsableElement = new List<IUsableElement>();
             try
             {
-                //var usableElements = new Dictionary<int, IUsableElement>(_account.Character.Map.UsableElements);
-               /* //var InteractiveElements = new Dictionary<int, IInteractiveElement>(_account.Character.Map.InteractiveElements);
                 var checkLock = (_account.Character.Map as Map.Map)?.CheckLock;
                 if (checkLock != null)
                     lock (checkLock)
-                    {*/
+                    {
                         foreach (var ressourceId in ToGather)
                         foreach (var usableElement in _account.Character.Map.UsableElements)
                         foreach (var interactiveElement in _account.Character.Map.InteractiveElements.Values)
@@ -109,7 +107,7 @@ namespace Messa.Game.Jobs
                             listUsableElement.Add(usableElement.Value);
                             listDistance.Add(GetRessourceDistance((int) usableElement.Value.Element.Id));
                         }
-                    //}
+                    }
                 if (listDistance.Count <= 0)
                     return;
                 foreach (var usableElement in TrierDistanceElement(listDistance, listUsableElement))

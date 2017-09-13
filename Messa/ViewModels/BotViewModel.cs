@@ -17,7 +17,8 @@ namespace Messa.ViewModels
     {
         public ObservableCollection<Packet> PacketList { get; }
         public ObservableCollection<LogMessage> Logs { get; }
-        private Account Account { get; }
+        public Account Account { get; }
+        public Character Character { get; }
         public ICommand Gather { get; set; }
 
         public BotViewModel(Account account)
@@ -25,6 +26,7 @@ namespace Messa.ViewModels
             PacketList = new ObservableCollection<Packet>();
             Logs = new ObservableCollection<LogMessage>();
             Account = account;
+            Character = (Character)account.Character;
             Account.Logger.OnLog += Logger_OnLog;
             Account.PacketLogged += OnPacketLogged;
             Gather = new RelayCommand.RelayCommand(o =>

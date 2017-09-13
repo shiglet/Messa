@@ -14,6 +14,7 @@ using Messa.API.Protocol.Network.Messages.Game.Context;
 using Messa.API.Protocol.Network.Messages.Game.Context.Roleplay;
 using Messa.API.Protocol.Network.Messages.Game.Interactive;
 using Messa.API.Utils.Enums;
+using Messa.Game.Map;
 using MoonSharp.Interpreter;
 
 namespace Messa.Core.Pathmanager
@@ -73,7 +74,7 @@ namespace Messa.Core.Pathmanager
                 {
                     switch (tuple.Item2)
                     {
-                        case "move":
+                        case "none":
                             Account.Logger.Log($"[PathManager] Déplacement vers {tuple.Item1}",
                                 LogMessageType.Info);
                             mapChangement = Account.Character.Map.ChangeMap(tuple.Item1);
@@ -97,7 +98,7 @@ namespace Messa.Core.Pathmanager
                 else
                     Account.Logger.Log($"Map {Account.Character.MapId} non gérée dans le trajet");
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 Account.Logger.Log("Problème dans le trajet",LogMessageType.Error);
             }
@@ -177,19 +178,12 @@ namespace Messa.Core.Pathmanager
                 MessageBox.Show(e.Message);
             }
         }
-        /*private void HandleMapComplementaryInformationsDataMessage(IAccount account,
-            MapComplementaryInformationsDataMessage message)
-        {
-            account.Logger.Log("Message !!!! MapComplementaryInformationsDataMessage !!!!");
-            if (Launched)
-                account.PerformAction(DoAction, 500);
-        }*/
 
         private void HandleInteractiveUseErrorMessage(IAccount account, InteractiveUseErrorMessage message)
         {
-            account.Logger.Log("InteractiveUserErrorMessage - Erreur lors de la récolte",LogMessageType.Error);
+            account.Logger.Log($"InteractiveUserErrorMessage - Erreur lors de la récolte de la ressource {message.ElemId} sur la cellId : {account.Character.CellId}",LogMessageType.Error);
             if (Launched)
-                account.PerformAction(DoAction, 50);
+                account.PerformAction(DoAction, 200);
         }
 
         private void HandleGameMapNoMovementMessage(IAccount account, GameMapNoMovementMessage message)

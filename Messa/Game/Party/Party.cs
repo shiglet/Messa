@@ -20,6 +20,7 @@ namespace Messa.Game.Party
         private void HandlePartyInvitationMessage(IAccount account, PartyInvitationMessage message)
         {
             account.Logger.Log($"Le joueur {message.FromName} vous invite dans son groupe.", LogMessageType.Info);
+            account.Network.SendToServer(new PartyRefuseInvitationMessage(){PartyId = message.PartyId});
         }
 
         private void HandlePartyInvitationCancelledForGuestMessage(IAccount account,
