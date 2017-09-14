@@ -8,6 +8,7 @@ using Messa.API.Core.Network;
 using Messa.API.Messages;
 using Messa.API.Network;
 using Messa.API.Utils.Log;
+using Messa.Core.Frames;
 
 namespace Messa.Core
 {
@@ -23,8 +24,8 @@ namespace Messa.Core
 
             Character = new Character(this);
 
-            //LatencyFrame = new LatencyFrame();
-            //BasicFrame = new BasicFrame(this);
+            LatencyFrame = new LatencyFrame();
+            BasicFrame = new BasicFrame(this);
            
         }
         public BotView BotView { get; set; }

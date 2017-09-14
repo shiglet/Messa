@@ -72,6 +72,8 @@
     </Compile>
     <Compile Include="Core\Account.cs" />
     <Compile Include="Core\Character.cs" />
+    <Compile Include="Core\Frames\BasicFrame.cs" />
+    <Compile Include="Core\Frames\LatencyFrame.cs" />
     <Compile Include="Core\Network\Network.cs" />
     <Compile Include="Core\Pathmanager\PathManager.cs" />
     <Compile Include="Core\Scripts\IASpell.cs" />

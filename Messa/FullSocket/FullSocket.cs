@@ -160,7 +160,7 @@ namespace Messa.FullSocket
             {
                 var msg = ssdm;
 
-                //fs.Account.Logger.Log("Sélection du serveur " + D2OParsing.GetServerName(msg.ServerId));
+                fs.Account.Logger.Log("Sélection du serveur " + D2OParsing.GetServerName(msg.ServerId));
                 var ticket = AES.DecodeWithAES(msg.Ticket);
                 _mTickets.Add(ticket,
                     Tuple.Create(fs.Account,

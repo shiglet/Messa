@@ -6,6 +6,7 @@ using Messa.API.Gamedata;
 using Messa.API.Gamedata.D2i;
 using Messa.API.Gamedata.D2o;
 using Messa.API.Messages;
+using Messa.API.Protocol.Network.Messages.Game.Dialog;
 using Messa.API.Protocol.Network.Messages.Game.Inventory;
 using Messa.API.Protocol.Network.Messages.Game.Inventory.Exchanges;
 using Messa.API.Protocol.Network.Messages.Game.Inventory.Items;
@@ -92,7 +93,7 @@ namespace Messa.Game.Inventory
         private void HandleExchangeRequestedTradeMessage(IAccount account, ExchangeRequestedTradeMessage message)
         {
             _account.Logger.Log($"Le joueur id: {message.Source} vous demande en échange.", LogMessageType.Info);
-            account.Network.SendToServer(new ExchangeAcceptMessage());
+            account.Network.SendToServer(new LeaveDialogRequestMessage());
         }
 
         private void HandleExchangeLeaveMessage(IAccount account, ExchangeLeaveMessage message)

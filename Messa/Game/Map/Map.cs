@@ -653,7 +653,7 @@ namespace Messa.Game.Map
 
         private void HandleGameMapNoMovementMessage(IAccount account, GameMapNoMovementMessage message)
         {
-            account.Logger.Log("Erreur lors du déplacement sur cellX : " + message.CellX + "cellY : " + message.CellY);
+            account.Logger.Log("Erreur lors du déplacement sur cellX : " + message.CellX + "cellY : " + message.CellY,LogMessageType.Error);
             account.Character.Status = CharacterStatus.None;
             OnMovementFailed();
         }
