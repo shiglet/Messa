@@ -11,9 +11,9 @@ using Messa.API.Datacenter;
 using Messa.API.Game.Achievement;
 using Achievement = Messa.Game.Achievement.Achievement;
 using Messa.API.Game.Alliance;
+using Messa.API.Game.Bank;
 using Messa.API.Game.BidHouse;
 using Messa.API.Game.Chat;
-using Messa.API.Game.Exchange;
 using Messa.API.Game.Fight;
 using Messa.API.Game.Friend;
 using Messa.API.Game.Guild;
@@ -44,9 +44,9 @@ using Messa.API.Utils;
 using Messa.API.Utils.Enums;
 using Messa.Core.Pathmanager;
 using Messa.Game.Alliance;
+using Messa.Game.Bank;
 using Messa.Game.BidHouse;
 using Messa.Game.Chat;
-using Messa.Game.Exchange;
 using Messa.Game.Fight;
 using Messa.Game.Friend;
 using Messa.Game.Guild;
@@ -69,9 +69,10 @@ namespace Messa.Core
             Spells = new List<SpellItem>();
             Status = CharacterStatus.Disconnected;
             Jobs = new List<JobExperience>();
-            GatherManager = new GatherManager(Account);
             PathManager = new PathManager(Account);
-
+            GatherManager = new GatherManager(Account);
+            Bank = new Bank(Account);
+            Bank.TransfertFinished += PathManager.OnTransfertFinished;
             Achievement = new Achievement(Account);
             Alliance = new Alliance(Account);
             BidHouse = new BidHouse(Account);
@@ -82,7 +83,6 @@ namespace Messa.Core
             Guild = new Guild(Account);
             Inventory = new Inventory(Account);
             Party = new Party(Account);
-            Exchange = new Exchange(Account);
             #region Choice Handler
 
             account.Network.RegisterPacket<BasicCharactersListMessage>(HandleBasicCharactersListMessage,
@@ -152,8 +152,7 @@ namespace Messa.Core
 
         //public ArtificialIntelligence Ia { get; set; }
         public IFight Fight { get; set; }
-
-        public IExchange Exchange { get; set; }
+        public IBank Bank { get; set; }
         public bool IsFirstConnection { get; set; }
 
         public CharacterStatus Status { get; set; }

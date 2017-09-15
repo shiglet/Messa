@@ -89,6 +89,7 @@
     <Compile Include="Gamedata\Icons\IconsManager.cs" />
     <Compile Include="Game\Achievement\IAchievement.cs" />
     <Compile Include="Game\Alliance\IAlliance.cs" />
+    <Compile Include="Game\Bank\IBank.cs" />
     <Compile Include="Game\BidHouse\IBidHouse.cs" />
     <Compile Include="Game\Chat\IChat.cs" />
     <Compile Include="Game\Entity\IEntity.cs" />
@@ -96,7 +97,6 @@
     <Compile Include="Game\Entity\IMonsterGroup.cs" />
     <Compile Include="Game\Entity\INpc.cs" />
     <Compile Include="Game\Entity\IPlayer.cs" />
-    <Compile Include="Game\Exchange\IExchange.cs" />
     <Compile Include="Game\Fight\Fighters\ICompanion.cs" />
     <Compile Include="Game\Fight\Fighters\IFighter.cs" />
     <Compile Include="Game\Fight\Fighters\IMonster.cs" />

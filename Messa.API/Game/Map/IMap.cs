@@ -37,7 +37,7 @@ namespace Messa.API.Game.Map
         IEntity Character { get; }
 
         /// <summary>Contient des informations fixes sur la carte</summary>
-        IMapData Data { get; }
+        IMapData Data { get; set; }
 
         /// <summary>Identifiant de la carte</summary>
         int Id { get; }

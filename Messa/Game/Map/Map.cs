@@ -72,7 +72,7 @@ namespace Messa.Game.Map
         public Dictionary<int, IInteractiveElement> Doors { get; }
         public Dictionary<int, IStatedElement> StatedElements { get; }
         public int WorldId => ObjectDataManager.Instance.Get<MapPosition>(Id).WorldMap;
-        public IMapData Data { get; private set; }
+        public IMapData Data { get;  set; }
         public int Id => ((API.Gamedata.D2p.Map) Data).Id;
         public int X => ObjectDataManager.Instance.Get<MapPosition>(Id).PosX;
         public int Y => ObjectDataManager.Instance.Get<MapPosition>(Id).PosY;
@@ -586,7 +586,7 @@ namespace Messa.Game.Map
                     continue;
                 }
                 if (actor is GameRolePlayNpcInformations npc)
-                {
+                { 
                     Npcs.Add(new Npc(npc.Disposition.CellId, npc.ContextualId, npc.NpcId));
                     continue;
                 }

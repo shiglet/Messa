@@ -85,6 +85,7 @@
     <Compile Include="FullSocket\NetworkMessageDispatcher.cs" />
     <Compile Include="Game\Achievement\Achievement.cs" />
     <Compile Include="Game\Alliance\Alliance.cs" />
+    <Compile Include="Game\Bank\Bank.cs" />
     <Compile Include="Game\BidHouse\BidHouse.cs" />
     <Compile Include="Game\Chat\Chat.cs" />
     <Compile Include="Game\Chat\History.cs" />
@@ -93,7 +94,6 @@
     <Compile Include="Game\Entity\MonsterGroup.cs" />
     <Compile Include="Game\Entity\Npc.cs" />
     <Compile Include="Game\Entity\Player.cs" />
-    <Compile Include="Game\Exchange\Exchange.cs" />
     <Compile Include="Game\Fight\ArtificialIntelligence.cs" />
     <Compile Include="Game\Fight\Fight.cs" />
     <Compile Include="Game\Fight\FightData.cs" />

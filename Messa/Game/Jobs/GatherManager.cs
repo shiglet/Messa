@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using Messa.API.Core;
+using Messa.API.Core.Pathmanager;
 using Messa.API.Datacenter;
 using Messa.API.Game.Jobs;
 using Messa.API.Game.Map;
@@ -19,13 +20,13 @@ using Messa.API.Protocol.Network.Messages.Game.Context.Roleplay;
 using Messa.API.Protocol.Network.Messages.Game.Context.Roleplay.Job;
 using Messa.API.Protocol.Network.Messages.Game.Interactive;
 using Messa.API.Utils;
+using Messa.Core.Pathmanager;
 
 namespace Messa.Game.Jobs
 {
     public class GatherManager : IGatherManager
     {
         private readonly IAccount _account;
-
         public GatherManager(IAccount account)
         {
             _account = account;
@@ -286,7 +287,7 @@ namespace Messa.Game.Jobs
             _account.Logger.Log($"Fin de la récolte de la ressource ...");
             _account.PerformAction(() =>
             {
-                if (CanGatherOnMap(ToGather))
+                if (CanGatherOnMap(ToGather) && !(account.Character.PathManager as PathManager).ReturnBank)
                 {
                     _account.Logger.Log($"Lancement de la méthode Gather...");
                     Gather();
