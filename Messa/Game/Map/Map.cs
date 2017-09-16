@@ -535,7 +535,6 @@ namespace Messa.Game.Map
 
             OnMapChanged();
         }
-
         /*private void UpdateMapControl()
         {
             /////// MAPCONTROL ///////

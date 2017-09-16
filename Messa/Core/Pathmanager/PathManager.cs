@@ -36,23 +36,21 @@ namespace Messa.Core.Pathmanager
             Launched = false;
             Account = account;
             PathData = new Dictionary<string, Tuple<string, string>>();
-            
-            Account.Network.RegisterPacket<InteractiveUseErrorMessage>(
-                HandleInteractiveUseErrorMessage, MessagePriority.Normal);
             Account.Network.RegisterPacket<GameMapNoMovementMessage>(
                 HandleGameMapNoMovementMessage, MessagePriority.Normal);
-            Account.Network.RegisterPacket<MapComplementaryInformationsDataMessage>(
-                HandleMapComplementaryInformationsDataMessage, MessagePriority.VeryHigh);
+            /*Account.Network.RegisterPacket<MapComplementaryInformationsDataMessage>(
+                HandleMapComplementaryInformationsDataMessage, MessagePriority.VeryHigh);*/
         }
 
-        private void HandleMapComplementaryInformationsDataMessage(IAccount account, MapComplementaryInformationsDataMessage message)
+        /*private void HandleMapComplementaryInformationsDataMessage(IAccount account, MapComplementaryInformationsDataMessage message)
         {
             if (!Launched || !Moved) return;
             Moved = false;
-            Account.Character.Map.Data = MapsManager.FromId(message.MapId);
+            //Account.Character.Map.Data = MapsManager.FromId(message.MapId);
+            Task.Delay(2000);
             Account.Logger.Log("Appelle de DoAction() après changement de map !!", LogMessageType.Error);
             DoAction();
-        }
+        }*/
 
         private Dictionary<string, Tuple<string, string>> PathData { get; set; }
         private Dictionary<string, Tuple<string, string>> PathDataBank { get; set; }
@@ -125,8 +123,7 @@ namespace Messa.Core.Pathmanager
                         case "move":
                             Account.Logger.Log($"[PathManager] Déplacement vers {tuple.Item1}",
                                 LogMessageType.Info);
-                            TryParse(tuple.Item1,out var sun);
-                            if(sun==0)
+                            if(!TryParse(tuple.Item1, out var sun))
                                 mapChangement = Account.Character.Map.ChangeMap(StringToMapDirectionEnum(tuple.Item1));
                             else
                             {
@@ -171,34 +168,49 @@ namespace Messa.Core.Pathmanager
             if (mapChangement == null) return;
             mapChangement.ChangementFinished += delegate (object sender, MapChangementFinishedEventArgs args)
             {
-                Account.Logger.Log($"Changement de map {args.Success}");
-                if(Launched)
-                {
-                    Account.Logger.Log("Lancement de DoAction après changement de map");
-                    Account.PerformAction(DoAction, 500);
-                }
+                var info = args.Success == true ? "réussie" : "Echec";
+                Account.Logger.Log($"Changement de map {info}/ {D2OParsing.GetMapCoordinates(args.OldMap)} --> {D2OParsing.GetMapCoordinates(args.NewMap)}");
+                if (!Launched || !args.Success) return;
+                Account.Logger.Log("Lancement de DoAction après changement de map");
+                Account.PerformAction(DoAction, 500);
             };
             mapChangement.PerformChangement();
         }
 
         private void OnCellMoveFinished(object sender, CellMovementEventArgs e)
         {
-            Move.MovementFinished -= OnCellMoveFinished;
-            Moved = true;
-            Account.Logger.Log($"Déplacement vers la case réussi avec succès.");
+            if (e.Sucess)
+            {
+                Move.MovementFinished -= OnCellMoveFinished;
+                Account.Character.Map.MapChanged += OnMapChanged;
+                Account.Logger.Log($"Déplacement vers la case réussi avec succès.");
+                return;
+            }
+            Account.Logger.Log("Echec du déplacement vers la case",LogMessageType.Error);
         }
 
         public void OnTransfertFinished()
         {
-            DoAction();
+            Account.PerformAction(DoAction,500);
         }
 
         private void OnMovementFinished(object sender, CellMovementEventArgs e)
         {
-            Move.MovementFinished -= OnMovementFinished;
-            Moved = true;
-            Account.Logger.Log($"Déplacement vers la porte réussi avec succès.. Utilisation ..");
-            Account.Character.Map.UseElement(Id, SkillInstanceUid);
+            if (e.Sucess)
+            {
+                Move.MovementFinished -= OnMovementFinished;
+                Account.Character.Map.MapChanged += OnMapChanged;
+                Account.Logger.Log($"Déplacement vers la porte réussi avec succès.. Utilisation ..");
+                Account.Character.Map.UseElement(Id, SkillInstanceUid);
+                return;
+            }
+            Account.Logger.Log("Echec du déplacement vers la case", LogMessageType.Error);
+        }
+
+        private void OnMapChanged(object sender, MapChangedEventArgs e)
+        {
+            Account.Character.Map.MapChanged -= OnMapChanged;
+            Account.PerformAction(DoAction, 500);
         }
 
         private MapDirectionEnum StringToMapDirectionEnum(string dir)
@@ -305,13 +317,6 @@ namespace Messa.Core.Pathmanager
             {
                 MessageBox.Show(e.Message);
             }
-        }
-
-        private void HandleInteractiveUseErrorMessage(IAccount account, InteractiveUseErrorMessage message)
-        {
-            account.Logger.Log($"InteractiveUserErrorMessage - Erreur lors de la récolte de la ressource {message.ElemId} sur la cellId : {account.Character.CellId}",LogMessageType.Error);
-            if (Launched)
-                account.PerformAction(DoAction, 200);
         }
 
         private void HandleGameMapNoMovementMessage(IAccount account, GameMapNoMovementMessage message)

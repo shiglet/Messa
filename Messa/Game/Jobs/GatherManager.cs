@@ -20,6 +20,8 @@ using Messa.API.Protocol.Network.Messages.Game.Context.Roleplay;
 using Messa.API.Protocol.Network.Messages.Game.Context.Roleplay.Job;
 using Messa.API.Protocol.Network.Messages.Game.Interactive;
 using Messa.API.Utils;
+using Messa.API.Utils.Enums;
+using Messa.Core;
 using Messa.Core.Pathmanager;
 
 namespace Messa.Game.Jobs
@@ -30,6 +32,8 @@ namespace Messa.Game.Jobs
         public GatherManager(IAccount account)
         {
             _account = account;
+            _account.Network.RegisterPacket<InteractiveUseErrorMessage>(
+                HandleInteractiveUseErrorMessage, MessagePriority.Normal);
             _account.Network.RegisterPacket<JobExperienceMultiUpdateMessage>(HandleJobExperienceMultiUpdateMessage,
                 MessagePriority.VeryHigh);
             _account.Network.RegisterPacket<JobLevelUpMessage>(HandleJobLevelUpMessage, MessagePriority.VeryHigh);
@@ -206,11 +210,11 @@ namespace Messa.Game.Jobs
             }
             else
             {
-                _account.Logger.Log($"Echec du déplacement vers la ressource ...");
+                _account.Logger.Log($"Echec du déplacement vers la ressource ...",LogMessageType.Error);
                 if (_account.Character.PathManager.Launched)
                 { 
-                    _account.Logger.Log($"Lancement de DoAction() suite à un echec de déplacement");
-                    _account.Character.PathManager.DoAction();
+                    _account.Logger.Log($"Lancement de DoAction() suite à un echec de déplacement",LogMessageType.Error);
+                    _account.PerformAction(_account.Character.PathManager.DoAction,500);
                 }
             }
         }
@@ -275,6 +279,11 @@ namespace Messa.Game.Jobs
             Launched = true;
             account.PerformAction(Gather, 1000);
         }
+        private void HandleInteractiveUseErrorMessage(IAccount account, InteractiveUseErrorMessage message)
+        {
+            account.Logger.Log($"InteractiveUserErrorMessage - Erreur lors de la récolte de la ressource {message.ElemId} sur la cellId : {account.Character.CellId}", LogMessageType.Error);
+            account.PerformAction(account.Character.PathManager.DoAction, 1000);
+        }
 
         private void HandleInteractiveMapUpdateMessage(IAccount account, InteractiveMapUpdateMessage message)
         {
@@ -287,16 +296,18 @@ namespace Messa.Game.Jobs
             _account.Logger.Log($"Fin de la récolte de la ressource ...");
             _account.PerformAction(() =>
             {
-                if (CanGatherOnMap(ToGather) && !(account.Character.PathManager as PathManager).ReturnBank)
+                /*if (CanGatherOnMap(ToGather) && !(account.Character.PathManager as PathManager).ReturnBank)
                 {
-                    _account.Logger.Log($"Lancement de la méthode Gather...");
+                    _account.Logger.Log($"Lancement de la méthode Gather()...",LogMessageType.Divers);
                     Gather();
                 }
                 else
                 {
+                    _account.Logger.Log($"Plus rien à récolter sur la map {D2OParsing.GetMapCoordinates(_account.Character.MapId)}, lancement de DoAction() dans HandleInteractiveUseEndedMessage",LogMessageType.Error);
                     _account.Character.PathManager.DoAction();
-                }
-            }, 350);
+                }*/
+                account.Character.PathManager.DoAction();
+            }, 500);
         }
     }
 }
