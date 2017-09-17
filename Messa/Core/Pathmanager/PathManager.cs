@@ -119,6 +119,7 @@ namespace Messa.Core.Pathmanager
                             break;
                         case "npcBank":
                             Account.Character.Bank.TalkToNcpBank();
+                            //Moved = true;
                             break;
                         case "move":
                             Account.Logger.Log($"[PathManager] Déplacement vers {tuple.Item1}",
@@ -165,6 +166,12 @@ namespace Messa.Core.Pathmanager
                 var line = frame.GetFileLineNumber();
                 Account.Logger.Log("Problème dans le trajet",LogMessageType.Error);
             }
+            if (Moved == true)
+            {
+                Moved = false;
+                _maxPods += 10;
+                Account.PerformAction(DoAction,500);
+            }
             if (mapChangement == null) return;
             mapChangement.ChangementFinished += delegate (object sender, MapChangementFinishedEventArgs args)
             {
@@ -191,7 +198,7 @@ namespace Messa.Core.Pathmanager
 
         public void OnTransfertFinished()
         {
-            Account.PerformAction(DoAction,500);
+            Account.PerformAction(DoAction,2500);
         }
 
         private void OnMovementFinished(object sender, CellMovementEventArgs e)
