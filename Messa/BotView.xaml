@@ -4,25 +4,49 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Messa"
+             xmlns:behaviors="clr-namespace:Messa.Behaviors"
+             xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
              mc:Ignorable="d" 
              d:DesignHeight="553" d:DesignWidth="1080">
     <Grid>
         <TabControl HorizontalAlignment="Left" Height="543" VerticalAlignment="Top" Width="1080" TabStripPlacement="Left">
             <TabItem Header="Accueil">
                 <Grid Background="#FFE5E5E5">
-                    <ListBox Height="501" Width="973" ItemsSource="{Binding Logs}">
+                    <ListBox  Width="973" ItemsSource="{Binding Logs}" Margin="0,18,0,31">
+                        <i:Interaction.Behaviors>
+                            <behaviors:ScrollListBoxBehavior/>
+                        </i:Interaction.Behaviors>
+                        <ListBox.ItemContainerStyle>
+                            <Style TargetType="ListBoxItem">
+                                <Setter Property="IsHitTestVisible" Value="False" />
+                            </Style>
+                        </ListBox.ItemContainerStyle>
                         <ListBox.ItemTemplate>
                             <DataTemplate>
                                 <TextBlock Text="{Binding Message}" Foreground="{Binding Color}"/>
+
                             </DataTemplate>
                         </ListBox.ItemTemplate>
                     </ListBox>
                     <TextBox HorizontalAlignment="Left" Height="21" Margin="0,506,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="973"/>
                 </Grid>
             </TabItem>
+
+            <TabItem Header="Action">
+                <Grid>
+                    <Button Content="Gather" HorizontalAlignment="Left" Margin="139,180,0,0" VerticalAlignment="Top" Width="75" Command="{Binding Gather}"/>
+                    <Label Content="{Binding Account.Character.Name}" Width="100" Margin="139,220,734,290"/>
+                    <Label Content="{Binding Account.Character.Level}" Width="100" Margin="331,220,542,290"/>
+                    <Label Content="{Binding Account.Character.Weight}" Width="100" Margin="139,126,734,384"/>
+                    <Label Content="{Binding Account.Character.MaxWeight}" Width="100" Margin="139,276,734,234"/>
+                </Grid>
+            </TabItem>
             <TabItem Header="Packets">
                 <Grid Background="#FFE5E5E5">
-                    <ListView ItemsSource="{Binding PacketList}"  Name="PacketLV" HorizontalAlignment="Left" Height="537" VerticalAlignment="Top" Width="973">
+                    <ListView  ItemsSource="{Binding PacketList}"  Name="PacketLV" HorizontalAlignment="Left" Height="537" VerticalAlignment="Top" Width="973">
+                        <i:Interaction.Behaviors>
+                            <behaviors:ScrollListViewBehavior/>
+                        </i:Interaction.Behaviors>
                         <ListView.View>
                             <GridView >
                                 <GridViewColumn Width="400" Header="Origin" DisplayMemberBinding="{Binding Origin}"/>
@@ -45,6 +69,8 @@
                     </ListView>
                 </Grid>
             </TabItem>
+
+
         </TabControl>
 
     </Grid>

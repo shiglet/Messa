@@ -7,6 +7,7 @@ using Messa.API.Core;
 using Messa.API.Messages;
 using Messa.API.Network;
 using Messa.API.Protocol;
+using Messa.API.Utils.Enums;
 
 namespace Messa.FullSocket
 {
@@ -34,8 +35,8 @@ namespace Messa.FullSocket
                 }
                 catch (Exception ex)
                 {
-                    (token as IAccount)?.Logger.Log($@"Cannot dispatch {message}");
-                    (token as IAccount)?.Logger.Log(ex.Message);
+                    (token as IAccount)?.Logger.Log($@"Cannot dispatch {message}",LogMessageType.Error);
+                    (token as IAccount)?.Logger.Log(ex.Message,LogMessageType.Error);
                 }
 
             if (Server != null && message.Destinations.HasFlag(ListenerEntry.Server))

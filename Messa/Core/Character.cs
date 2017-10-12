@@ -1,13 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using Messa.API.Core;
 using Messa.API.Core.Pathmanager;
 using Messa.API.Datacenter;
 using Messa.API.Game.Achievement;
+using Achievement = Messa.Game.Achievement.Achievement;
 using Messa.API.Game.Alliance;
+using Messa.API.Game.Bank;
 using Messa.API.Game.BidHouse;
 using Messa.API.Game.Chat;
 using Messa.API.Game.Fight;
@@ -15,9 +19,9 @@ using Messa.API.Game.Friend;
 using Messa.API.Game.Guild;
 using Messa.API.Game.Inventory;
 using Messa.API.Game.Jobs;
-using Messa.API.Game.Map;
 using Messa.API.Game.Party;
 using Messa.API.Gamedata.D2o;
+using Messa.API.Gamedata.D2p;
 using Messa.API.Messages;
 using Messa.API.Protocol.Enums;
 using Messa.API.Protocol.Network.Messages.Game.Character.Choice;
@@ -38,12 +42,23 @@ using Messa.API.Protocol.Network.Types.Game.Data.Items;
 using Messa.API.Protocol.Network.Types.Game.Look;
 using Messa.API.Utils;
 using Messa.API.Utils.Enums;
+using Messa.Core.Pathmanager;
+using Messa.Game.Alliance;
+using Messa.Game.Bank;
+using Messa.Game.BidHouse;
 using Messa.Game.Chat;
+using Messa.Game.Fight;
 using Messa.Game.Friend;
+using Messa.Game.Guild;
+using Messa.Game.Inventory;
+using Messa.Game.Jobs;
+using Messa.Game.Map;
+using Messa.Game.Party;
+using IMap = Messa.API.Game.Map.IMap;
 
 namespace Messa.Core
 {
-    public class Character : ICharacter
+    public class Character : ICharacter, INotifyPropertyChanged
     {
         public Character(IAccount account)
         {
@@ -54,20 +69,20 @@ namespace Messa.Core
             Spells = new List<SpellItem>();
             Status = CharacterStatus.Disconnected;
             Jobs = new List<JobExperience>();
-            //GatherManager = new GatherManager(Account);
-            //PathManager = new PathManager(Account);
-
-            //Achievement = new Achievement(Account);
-            //Alliance = new Alliance(Account);
-            //BidHouse = new BidHouse(Account);
+            PathManager = new PathManager(Account);
+            GatherManager = new GatherManager(Account);
+            Bank = new Bank(Account);
+            Bank.TransfertFinished += PathManager.OnTransfertFinished;
+            Achievement = new Achievement(Account);
+            Alliance = new Alliance(Account);
+            BidHouse = new BidHouse(Account);
             Chat = new Chat(Account);
-            //Map = new Map(Account);
-            //Fight = new Fight(Account);
+            Map = new Game.Map.Map(Account);
+            Fight = new Fight(Account);
             Friend = new Friend(Account);
-            //Guild = new Guild(Account);
-            //Inventory = new Inventory(Account);
-            //Party = new Party(Account);
-
+            Guild = new Guild(Account);
+            Inventory = new Inventory(Account);
+            Party = new Party(Account);
             #region Choice Handler
 
             account.Network.RegisterPacket<BasicCharactersListMessage>(HandleBasicCharactersListMessage,
@@ -137,14 +152,34 @@ namespace Messa.Core
 
         //public ArtificialIntelligence Ia { get; set; }
         public IFight Fight { get; set; }
-
+        public IBank Bank { get; set; }
         public bool IsFirstConnection { get; set; }
 
         public CharacterStatus Status { get; set; }
 
         public double Id { get; set; }
-        public string Name { get; set; }
-        public int Level { get; set; }
+        private string _name;
+
+        public string Name
+        {
+            get => _name;
+            set
+            {
+                _name = value;
+                OnPropertyChanged("Name");
+            }
+        }
+
+        private int _level;
+        public int Level
+        {
+            get=> _level;
+            set
+            {
+                _level = value;
+                OnPropertyChanged("Level");
+            } 
+        }
         public bool Sex { get; set; }
         public CharacterCharacteristicsInformations Stats { get; set; }
         public EntityLook Look { get; set; }
@@ -152,15 +187,34 @@ namespace Messa.Core
         public BreedEnum Breed { get; set; }
 
         public int LifePercentage => (int)(Stats.LifePoints / (double)Stats.MaxLifePoints * 100);
+
         public int WeightPercentage => (int)(Weight / (double)MaxWeight * 100);
+
         public int EnergyPercentage => (int)(Stats.EnergyPoints / (double)Stats.MaxEnergyPoints * 100);
         public int ExperiencePercentage => (int)(Stats.Experience / (double)Stats.ExperienceNextLevelFloor * 100);
 
         public int CellId { get; set; }
         public int MapId { get; set; }
-
-        public uint Weight { get; set; }
-        public uint MaxWeight { get; set; }
+        private uint _weight;
+        private uint _maxWeight;
+        public uint Weight
+        {
+            get => _weight;
+            set
+            {
+                _weight = value;
+                OnPropertyChanged("Weight");
+            } 
+        }
+        public uint MaxWeight
+        {
+            get => _maxWeight;
+            set
+            {
+                _maxWeight = value;
+                OnPropertyChanged("MaxWeight");
+            }
+        }
 
         public ActorRestrictionsInformations Restrictions { get; set; }
 
@@ -177,8 +231,6 @@ namespace Messa.Core
         public List<JobExperience> Jobs { get; set; }
         public IGatherManager GatherManager { get; set; }
         public IPathManager PathManager { get; set; }
-        IGatherManager ICharacter.GatherManager { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        IMap ICharacter.Map { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
         public string GetSkinUrl(string mode, int orientation, int width, int height, int zoom)
         {
@@ -300,7 +352,7 @@ namespace Messa.Core
 
         private void HandleCharacterDeletionErrorMessage(IAccount account, CharacterDeletionErrorMessage message)
         {
-            account.Logger.Log("Une erreur est survenue lors de la suppresion du personnae.");
+            account.Logger.Log("Une erreur est survenue lors de la suppresion du personnage.");
         }
 
         #endregion Deletion
@@ -534,5 +586,12 @@ namespace Messa.Core
         }
 
         #endregion Initialization
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
     }
 }

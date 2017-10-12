@@ -11,6 +11,11 @@ namespace Messa.API.Gamedata
 {
     public class D2OParsing
     {
+        public static string GetInteractiveName(int interactiveId)
+        {
+            var objectValue = RuntimeHelpers.GetObjectValue(ObjectDataManager.Instance.Get<Interactive>(interactiveId).NameId);
+            return FastD2IReader.Instance.GetText(Convert.ToInt32(objectValue));
+        }
         public static Point GetMapCoordinates(int mapId)
         {
             var value = ObjectDataManager.Instance.Get<MapPosition>(mapId);

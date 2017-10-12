@@ -13,7 +13,6 @@ namespace Messa.API.Game.Map
         List<INpc> Npcs { get; }
         List<IPlayer> Players { get; }
         List<IMerchant> Merchants { get; }
-
         /// <summary>Récupère le dictionnaire des portes de la carte</summary>
         /// <returns>Dictionnaire (cellId, element) contenant les portes</returns>
         Dictionary<int, IInteractiveElement> Doors { get; }
@@ -26,6 +25,8 @@ namespace Messa.API.Game.Map
         /// <returns>Dictionnaire (id, element) de IStatedElement</returns>
         Dictionary<int, IStatedElement> StatedElements { get; }
 
+        string Position { get; set; }
+
         /// <summary>Récupère l'identifiant du monde actuel</summary>
         /// <returns>L'id du monde</returns>
         int WorldId { get; }
@@ -35,7 +36,7 @@ namespace Messa.API.Game.Map
         IEntity Character { get; }
 
         /// <summary>Contient des informations fixes sur la carte</summary>
-        IMapData Data { get; }
+        IMapData Data { get; set; }
 
         /// <summary>Identifiant de la carte</summary>
         int Id { get; }

@@ -59,25 +59,25 @@ namespace Messa.ViewModels
                     var x = await a.ShowLoginAsync(this, "Identification...", "Veuillez vous identifier");
                     if (x != null)
                     {
-                        var task = Task.Factory.StartNew(() =>
+                        await Task.Factory.StartNew(() =>
                         {
                             if (!loaded)
                             {
-                                //UserData.RegisterAssembly();
-                                //Messabot.Commands.Managers.CommandManager.Build();
-                                ProtocolTypeManager.Initialize();
-    
-    
-    
+                            //UserData.RegisterAssembly();
+                            //Messabot.Commands.Managers.CommandManager.Build();
+                            ProtocolTypeManager.Initialize();
+
+
+
                                 Settings.Default.DofusPath = @"C:\Users\Sadik\AppData\Local\Ankama\Dofus";
                                 Settings.Default.Save();
-    
+
                                 MapsManager.Init(Settings.Default.DofusPath + @"\app\content\maps");
                                 IconsManager.Instance.Initialize(Settings.Default.DofusPath + @"\app\content\gfx\items");
                                 ObjectDataManager.Instance.AddReaders(Settings.Default.DofusPath + @"\app\data\common");
-    
-                                FastD2IReader.Instance.Init(Settings.Default.DofusPath + @"\app\data\i18n" +"\\i18n_fr.d2i");
-    
+
+                                FastD2IReader.Instance.Init(Settings.Default.DofusPath + @"\app\data\i18n" + "\\i18n_fr.d2i");
+
                                 ImageManager.Init(Settings.Default.DofusPath);
                                 loaded = true;
                             }
@@ -86,14 +86,13 @@ namespace Messa.ViewModels
                                 RealAuthHost = "213.248.126.40",
                                 RealAuthPort = 443
                             };
-    
+
                             var messageReceiver = new MessageReceiver();
                             messageReceiver.Initialize();
                             _fullSocket = new Fullsocket(fullSocketConfiguration, messageReceiver);
                             _account = _fullSocket.Connect(x.Username, x.Password);
                             LogWelcomeMessage();
                         });
-                        await task;
                         Tabs.Add(new TabItem()
                         {
                             Content = new BotView(_account as Account),

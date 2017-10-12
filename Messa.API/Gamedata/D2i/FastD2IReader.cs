@@ -23,7 +23,6 @@ namespace Messa.API.Gamedata.D2i
 
         private static string _pather;
         private static BinaryReader _br;
-        private readonly Stream _stream;
 
         private FastD2IReader()
         {
@@ -291,14 +290,14 @@ namespace Messa.API.Gamedata.D2i
                     // ignored
                 }
                 //Dispose stream on class dispose
-                try
+                /*try
                 {
-                    _stream.Dispose();
+                    //_stream.Dispose();
                 }
                 catch (Exception)
                 {
                     // ignored
-                }
+                }*/
                 // TODO: free unmanaged resources (unmanaged objects) and override Finalize() below.
                 // TODO: set large fields to null.
             }

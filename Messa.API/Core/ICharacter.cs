@@ -2,6 +2,7 @@
 using Messa.API.Core.Pathmanager;
 using Messa.API.Game.Achievement;
 using Messa.API.Game.Alliance;
+using Messa.API.Game.Bank;
 using Messa.API.Game.BidHouse;
 using Messa.API.Game.Chat;
 using Messa.API.Game.Fight;
@@ -137,6 +138,7 @@ namespace Messa.API.Core
         IBidHouse BidHouse { get; set; }
 
         IChat Chat { get; set; }
+        IBank Bank { get; set; }
 
         IMap Map { get; set; }
 

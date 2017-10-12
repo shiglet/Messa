@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Messa.API.Core.Pathmanager;
 using Messa.API.Game.Map.Elements;
 
 namespace Messa.API.Game.Jobs
@@ -11,6 +12,7 @@ namespace Messa.API.Game.Jobs
         bool Launched { get; }
         List<int> ToGather { get; }
         bool AutoGather { get; }
+        
 
         void Launch();
 

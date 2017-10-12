@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Input;
 using System.Windows.Media;
 using Messa.API.Utils.Enums;
 using Messa.Core;
@@ -16,15 +17,22 @@ namespace Messa.ViewModels
     {
         public ObservableCollection<Packet> PacketList { get; }
         public ObservableCollection<LogMessage> Logs { get; }
-        private Account Account { get; }
+        public Account Account { get; }
+        public Character Character { get; }
+        public ICommand Gather { get; set; }
 
         public BotViewModel(Account account)
         {
             PacketList = new ObservableCollection<Packet>();
             Logs = new ObservableCollection<LogMessage>();
             Account = account;
+            Character = (Character)account.Character;
             Account.Logger.OnLog += Logger_OnLog;
             Account.PacketLogged += OnPacketLogged;
+            Gather = new RelayCommand.RelayCommand(o =>
+            {
+                Account.Character.PathManager.Start("incarnam");
+            });
         }
 
         private void OnPacketLogged(string origin, string name, string id)
@@ -116,7 +124,7 @@ namespace Messa.ViewModels
                         color = (Brush)brushConverter.ConvertFromString("#E8890D");
                         break;
                 }
-                Logs.Add(new LogMessage($"{DateTime.Now.TimeOfDay} - {log}",color));
+                Logs.Add(new LogMessage($"[{DateTime.Now.TimeOfDay}] - {log}",color));
             });
         }
     }
